@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="css/index.css" rel="stylesheet">
+  <link href="css/dragdrop.css" rel="stylesheet">
+  <link href="style/index.css" rel="stylesheet">
+</head>
+<body>
+    <script src="../dist/phosphor.min.js"></script>
+    <script>
+    var ContentWidget = (function (superclass) {
+        function ContentWidget(name) {
+            superclass.call(this, { node: this.createNode() });
+            this.setFlag(superclass.Flag.DisallowLayout);
+            this.addClass('content');
+            this.addClass(name.toLowerCase());
+            this.title.label = name;
+            this.title.closable = true;
+        }
+
+        if ( superclass ) ContentWidget.__proto__ = superclass;
+        ContentWidget.prototype = Object.create( superclass && superclass.prototype );
+        ContentWidget.prototype.constructor = ContentWidget;
+
+        ContentWidget.prototype.createNode = function createNode () {
+            var node = document.createElement('div');
+            var content = document.createElement('div');
+            node.appendChild(content);
+            return node;
+        };
+
+        return ContentWidget;
+    }(phosphor.widgets.Widget));
+
+    window.onload = function () {
+        var r1 = new ContentWidget('Red');
+        var b1 = new ContentWidget('Blue');
+        var g1 = new ContentWidget('Green');
+        var y1 = new ContentWidget('Yellow');
+
+        var r2 = new ContentWidget('Red');
+        var b2 = new ContentWidget('Blue');
+        // let g2 = new ContentWidget('Green');
+        // let y2 = new ContentWidget('Yellow');
+
+        var dock = new phosphor.widgets.DockPanel();
+        dock.addWidget(r1);
+        dock.addWidget(b1, { mode: 'split-right', ref: r1 });
+        dock.addWidget(y1, { mode: 'split-bottom', ref: b1 });
+        dock.addWidget(g1, { mode: 'split-left', ref: y1 });
+        dock.addWidget(r2, { ref: b1 });
+        dock.addWidget(b2, { mode: 'split-right', ref: y1 });
+        dock.id = 'dock';
+
+        phosphor.widgets.BoxPanel.setStretch(dock, 1);
+
+        var main = new phosphor.widgets.SplitPanel();
+        main.id = 'main';
+        main.addWidget(dock);
+
+        window.onresize = function () { main.update(); };
+        phosphor.widgets.Widget.attach(main, document.body);
+    };
+
+    </script>
+</body>
+</html>
