@@ -1,0 +1,4 @@
+node_modules
+*.log
+dist/phosphor.es.js
+
